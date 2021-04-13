@@ -68,6 +68,9 @@ app.get('/', (req, res) => {
     res.sendFile(__dirname + '/index.html');
 });
 
+//app.get('/', (req, res) => res.sendFile(__dirname+'/model/model.json'))
+
+
 io.on('connection', (socket) => {
     numUsers++;
     console.log('num users: ', numUsers)

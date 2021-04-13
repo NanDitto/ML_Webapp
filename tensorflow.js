@@ -8,10 +8,12 @@ const possibles = ['Rock', 'Paper', 'Scissors']
 //WORKING
 async function prediction(imageBuffer) {
     const model = await tfNode.loadLayersModel('file://model/model.json');
-    // Convert Image to tensorflow Image
-
-    let imageTensor = tfNode.node.decodePng(imageBuffer, 3).expandDims(0)
+    
+    // convert image to tensorflow tensor
+    let imageTensor = tfNode.node.decodePng(imageBuffer, 3)
     imageTensor = tf.div(imageTensor, 255)
+    imageTensor = tf.image.resizeBilinear(imageTensor, [150, 150])
+    imageTensor = imageTensor.expandDims(0)
     // console.log(imageTensor.shape)
     // console.log(imageTensor.dataSync())
 
@@ -27,9 +29,9 @@ async function prediction(imageBuffer) {
     return { pick: pick, accuracy: Math.max(...results) }
 }
 
-// fs.readFile(resolve('./tmp/1.png'), function(err, image) {
-//     if (err) return console.log(err)
-//     console.log(prediction(image))
-// })
+fs.readFile(resolve('./tmp/1.png'), function(err, image) {
+    if (err) return console.log(err)
+    console.log(prediction(image))
+})
 
 module.exports.prediction = prediction

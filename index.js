@@ -4,6 +4,7 @@ const http = require('http');
 const server = http.createServer(app);
 const io = require('socket.io')(server);
 const fs = require('fs')
+const { prediction } = require('./tensorflow')
 
 let numUsers = 0;
 let currentCountdown = 3;
@@ -81,25 +82,35 @@ io.on('connection', (socket) => {
         startCountdown();
     }
 
-    socket.on('challenge_photo', (data) => {
+    socket.on('challenge_photo', async (data) => {
         socket.broadcast.emit('opponent_photo', data)
         const buffer = Buffer.from(data, 'base64')
 
-        // TODO: do tensorflow stuff
+        const pred = await prediction(buffer)
+
+        const pick = pred.pick
+        const accuracy = pred.accuracy
+
+        console.log(pred)
+        
         if (!receivedImages.length) {
-            receivedImages.push(selectRandom())
+            receivedImages.push(pred)
             firstSocket = socket
         } else {
-            receivedImages.push(selectRandom())
+            receivedImages.push(pred)
             const winner = selectWinner(receivedImages)
 
             const resultA = {
-                you: receivedImages[0],
-                opponent: receivedImages[1]
+                you: receivedImages[0].pick,
+                youAccuracy: receivedImages[0].accuracy,
+                opponent: receivedImages[1].pick,
+                opponentAccuracy: receivedImages[1].accuracy
             }
             const resultB = {
-                you: receivedImages[1],
-                opponent: receivedImages[0]
+                you: receivedImages[1].pick,
+                youAccuracy: receivedImages[1].accuracy,
+                opponent: receivedImages[0].pick,
+                opponentAccuracy: receivedImages[0].accuracy,
             } 
             
             if (winner == 0) {

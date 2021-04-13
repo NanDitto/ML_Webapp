@@ -94,6 +94,7 @@
           <canvas class='person-image' id='img1'></canvas>
         </div>
         <h3 class='card-subtitle' id='subtitle1'></h3>
+        <h4 class='card-accuracy' id='accuracy1'></h4>
       </div>
       <h2 class='vs-text'>VS.</h2>
       <div class='card'>
@@ -103,6 +104,7 @@
           <img class='person-image' id='img2'></img>
         </div>
         <h3 class='card-subtitle' id='subtitle2'></h3>
+        <h4 class='card-accuracy' id='accuracy2'></h4>
       </div>
     </div>
   </body>
@@ -155,6 +157,12 @@
         img1Text.style.fontSize = img2Text.style.fontSize = '1rem'
         
         sub1.textContent = sub2.textContent = ''
+
+        var acc1 = document.getElementById('accuracy1')
+        var acc2 = document.getElementById('accuracy2')
+        
+        acc1.textContent = ''
+        acc2.textContent = ''
     });
 
     socket.on('countdown_update', function(num) {
@@ -203,6 +211,12 @@
             sub1.textContent += ' (TIE)'
             sub2.textContent += ' (TIE)'
         }
+
+        var acc1 = document.getElementById('accuracy1')
+        var acc2 = document.getElementById('accuracy2')
+        
+        acc1.textContent += '\nAccuracy: ' + (data['youAccuracy'] * 100).toFixed(2) + '%'
+        acc2.textContent += '\nAccuracy: ' + (data['opponentAccuracy'] * 100).toFixed(2) + '%'
     })
     
     function takePicture() {

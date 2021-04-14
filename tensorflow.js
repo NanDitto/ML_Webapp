@@ -29,9 +29,9 @@ async function prediction(imageBuffer) {
     return { pick: pick, accuracy: Math.max(...results) }
 }
 
-fs.readFile(resolve('./tmp/1.png'), function(err, image) {
-    if (err) return console.log(err)
-    console.log(prediction(image))
-})
+// fs.readFile(resolve('./tmp/1.png'), function(err, image) {
+//     if (err) return console.log(err)
+//     console.log(prediction(image))
+// })
 
 module.exports.prediction = prediction
